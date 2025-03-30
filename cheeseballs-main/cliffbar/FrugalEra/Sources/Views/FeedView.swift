@@ -36,8 +36,17 @@ struct FeedView: View {
     var body: some View {
         NavigationView {
             ZStack {
-                Color(.systemBackground)
-                    .ignoresSafeArea()
+                // Background gradient
+                LinearGradient(
+                    gradient: Gradient(colors: [
+                        Color(hex: "8A2BE2").opacity(0.05), // Very subtle purple
+                        Color(hex: "8A2BE2").opacity(0.02), // Even more subtle purple
+                        Color(.systemGray6) // System gray
+                    ]),
+                    startPoint: .topLeading,
+                    endPoint: .bottomTrailing
+                )
+                .ignoresSafeArea()
                 
                 ScrollView {
                     VStack(spacing: 24) {
@@ -76,7 +85,7 @@ struct FeedView: View {
                     }) {
                         Image(systemName: "plus.circle.fill")
                             .font(.system(size: 24))
-                            .foregroundColor(.black)
+                            .foregroundColor(Color(hex: "8A2BE2")) // Purple
                     }
                     .padding(.trailing, 4)
                 }
@@ -136,12 +145,12 @@ struct FilterPill: View {
             Text(title)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundColor(isSelected ? .white : .black)
+                .foregroundColor(isSelected ? .white : Color(hex: "8A2BE2")) // Purple
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(isSelected ? Color.black : Color(.systemGray6))
+                        .fill(isSelected ? Color(hex: "8A2BE2") : Color(hex: "8A2BE2").opacity(0.1)) // Purple with opacity
                 )
         }
     }
@@ -168,7 +177,7 @@ struct FeedItemCard: View {
                 
                 Text(item.timestamp, style: .relative)
                     .font(.caption)
-                    .foregroundColor(.gray)
+                    .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                 
                 Menu {
                     Button(action: {}) {
@@ -179,7 +188,7 @@ struct FeedItemCard: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis")
-                        .foregroundColor(.gray)
+                        .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                 }
             }
             
@@ -188,7 +197,7 @@ struct FeedItemCard: View {
                 // Character Image
                 if item.userImage == "👤" {
                     Circle()
-                        .fill(Color(.systemGray6))
+                        .fill(Color(hex: "8A2BE2").opacity(0.1)) // Purple with opacity
                         .frame(width: 80, height: 80)
                         .overlay(
                             Text("👤")
@@ -221,11 +230,11 @@ struct FeedItemCard: View {
                                     Text(reaction.emoji)
                                     Text("\(reaction.count)")
                                         .font(.caption)
-                                        .foregroundColor(.gray)
+                                        .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                                 }
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(Color(.systemGray6))
+                                .background(Color(hex: "8A2BE2").opacity(0.1)) // Purple with opacity
                                 .cornerRadius(12)
                             }
                         }
@@ -244,7 +253,7 @@ struct FeedItemCard: View {
                     }) {
                         Image(systemName: "face.smiling")
                             .font(.system(size: 16))
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                     }
                     
                     if showingEmojiPicker {
@@ -265,23 +274,23 @@ struct FeedItemCard: View {
                         }) {
                             Image(systemName: "plus.circle.fill")
                                 .font(.system(size: 16))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                         }
                     }
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-                .background(Color(.systemGray6))
+                .background(Color(hex: "8A2BE2").opacity(0.1)) // Purple with opacity
                 .cornerRadius(12)
                 
                 Button(action: { showingComments = true }) {
                     HStack(spacing: 4) {
                         Image(systemName: "bubble.right")
                             .font(.system(size: 14))
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                         Text("\(item.comments)")
                             .font(.system(size: 12))
-                            .foregroundColor(.gray)
+                            .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                     }
                 }
                 
@@ -293,10 +302,10 @@ struct FeedItemCard: View {
                         HStack(spacing: 4) {
                             Image(systemName: viewModel.hasAddedFriends(for: item.id) ? "checkmark.circle.fill" : "person.badge.plus")
                                 .font(.system(size: 14))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                             Text(viewModel.hasAddedFriends(for: item.id) ? "See Added Friends" : "Add Friends")
                                 .font(.system(size: 12))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                         }
                     }
                 } else {
@@ -306,10 +315,10 @@ struct FeedItemCard: View {
                         HStack(spacing: 4) {
                             Image(systemName: viewModel.hasRequestedToBeAdded(for: item.id) ? "checkmark.circle.fill" : "person.badge.plus")
                                 .font(.system(size: 14))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                             Text(viewModel.hasRequestedToBeAdded(for: item.id) ? "Sent" : "Add me")
                                 .font(.system(size: 12))
-                                .foregroundColor(.gray)
+                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
                         }
                     }
                 }
@@ -318,7 +327,7 @@ struct FeedItemCard: View {
         .padding()
         .background(Color.white)
         .cornerRadius(16)
-        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 2)
+        .shadow(color: Color(hex: "8A2BE2").opacity(0.1), radius: 10, x: 0, y: 2) // Purple shadow
         .sheet(isPresented: $viewModel.showingFriendSelector) {
             FriendSelectorView(viewModel: viewModel)
         }
