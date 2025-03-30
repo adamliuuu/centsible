@@ -162,8 +162,10 @@ struct FeedItemCard: View {
     @Binding var showingComments: Bool
     @State private var showingEmojiPicker = false
     @State private var selectedEmoji = ""
+    @State private var showingCancelConfirmation = false
+    @State private var isReactionsExpanded = false
     
-    private let commonEmojis = ["❤️", "😂", "🔥"]
+    private let commonEmojis = ["❤️", "😂", "🔥", "👍", "🎉", "😍", "😮", "😢", "😡", "🤔"]
     
     var body: some View {
         VStack(alignment: .leading, spacing: 16) {
@@ -193,143 +195,180 @@ struct FeedItemCard: View {
             }
             
             // Content with image and description
-            HStack(alignment: .top, spacing: 16) {
-                // Character Image
-                if item.userImage == "👤" {
-                    Circle()
-                        .fill(Color(hex: "8A2BE2").opacity(0.1)) // Purple with opacity
-                        .frame(width: 80, height: 80)
-                        .overlay(
-                            Text("👤")
-                                .font(.system(size: 32))
-                        )
-                } else {
-                    Image(item.userImage)
-                        .resizable()
-                        .aspectRatio(contentMode: .fit)
-                        .frame(width: 80, height: 80)
-                        .clipShape(RoundedRectangle(cornerRadius: 12))
-                }
-                
-                // Description
-                Text(item.description)
-                    .font(.body)
-                    .fontWeight(.regular)
-                    .foregroundColor(.black)
-            }
-            
-            // Reactions Display
-            if !viewModel.getReactions(for: item.id).isEmpty {
-                ScrollView(.horizontal, showsIndicators: false) {
-                    HStack(spacing: 8) {
-                        ForEach(viewModel.getReactions(for: item.id), id: \.emoji) { reaction in
-                            Button(action: {
-                                viewModel.toggleReaction(reaction.emoji, by: "You", to: item.id)
-                            }) {
-                                HStack(spacing: 4) {
-                                    Text(reaction.emoji)
-                                    Text("\(reaction.count)")
-                                        .font(.caption)
-                                        .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
+            VStack(alignment: .leading, spacing: 12) {
+                if let tripDetails = item.tripDetails {
+                    // Trip Planning Post UI
+                    VStack(alignment: .leading, spacing: 8) {
+                        HStack {
+                            Image(systemName: "mappin.circle.fill")
+                                .foregroundColor(Color(hex: "8A2BE2"))
+                            Text(tripDetails.destination)
+                                .font(.title3)
+                                .fontWeight(.bold)
+                        }
+                        
+                        Text(tripDetails.date, style: .date)
+                            .font(.subheadline)
+                            .foregroundColor(.secondary)
+                        
+                        if tripDetails.isScheduled {
+                            // Your scheduled trip
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Confirmed: \(tripDetails.confirmedFriends.joined(separator: ", "))")
+                                    .font(.subheadline)
+                                    .foregroundColor(.green)
+                                
+                                if !tripDetails.pendingFriends.isEmpty {
+                                    Text("Pending: \(tripDetails.pendingFriends.joined(separator: ", "))")
+                                        .font(.subheadline)
+                                        .foregroundColor(.orange)
                                 }
-                                .padding(.horizontal, 8)
-                                .padding(.vertical, 4)
-                                .background(Color(hex: "8A2BE2").opacity(0.1)) // Purple with opacity
-                                .cornerRadius(12)
+                            }
+                        } else {
+                            // Trip invitation
+                            VStack(alignment: .leading, spacing: 4) {
+                                Text("Going: \(tripDetails.confirmedFriends.joined(separator: ", "))")
+                                    .font(.subheadline)
+                                    .foregroundColor(.green)
+                                
+                                if let response = viewModel.getTripResponse(item.id) {
+                                    Text(response == .accepted ? "You accepted this invitation" : "You declined this invitation")
+                                        .font(.subheadline)
+                                        .foregroundColor(response == .accepted ? .green : .red)
+                                } else {
+                                    HStack(spacing: 12) {
+                                        Button(action: {
+                                            viewModel.respondToTrip(item.id, accept: true)
+                                        }) {
+                                            Text("Accept")
+                                                .font(.subheadline)
+                                                .foregroundColor(.white)
+                                                .padding(.horizontal, 16)
+                                                .padding(.vertical, 8)
+                                                .background(Color.green)
+                                                .cornerRadius(8)
+                                        }
+                                        
+                                        Button(action: {
+                                            viewModel.respondToTrip(item.id, accept: false)
+                                        }) {
+                                            Text("Decline")
+                                                .font(.subheadline)
+                                                .foregroundColor(.white)
+                                                .padding(.horizontal, 16)
+                                                .padding(.vertical, 8)
+                                                .background(Color.red)
+                                                .cornerRadius(8)
+                                        }
+                                    }
+                                }
                             }
                         }
                     }
+                } else {
+                    // Regular post UI
+                    if item.type == .purchase && item.title.contains("$") {
+                        Text(item.title)
+                            .font(.title2)
+                            .fontWeight(.bold)
+                            .foregroundColor(.primary)
+                    }
+                    
+                    if item.hasImage {
+                        RoundedRectangle(cornerRadius: 12)
+                            .fill(Color.gray.opacity(0.2))
+                            .frame(height: 200)
+                            .overlay(
+                                Image(systemName: "photo")
+                                    .font(.system(size: 40))
+                                    .foregroundColor(.gray)
+                            )
+                    }
+                    
+                    Text(item.description)
+                        .font(.body)
+                        .foregroundColor(.secondary)
+                        .lineLimit(3)
                 }
             }
             
-            // Interaction Buttons
+            // Reaction and comment buttons
             HStack(spacing: 16) {
-                // Emoji Reaction Button
-                HStack(spacing: 8) {
-                    Button(action: {
-                        withAnimation(.spring()) {
-                            showingEmojiPicker.toggle()
-                        }
-                    }) {
-                        Image(systemName: "face.smiling")
-                            .font(.system(size: 16))
-                            .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
+                Button(action: {
+                    withAnimation(.spring()) {
+                        isReactionsExpanded.toggle()
                     }
-                    
-                    if showingEmojiPicker {
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "face.smiling")
+                            .foregroundColor(Color(hex: "8A2BE2"))
+                        Text("React")
+                            .foregroundColor(Color(hex: "8A2BE2"))
+                    }
+                }
+                
+                Button(action: {
+                    showingComments = true
+                }) {
+                    HStack(spacing: 4) {
+                        Image(systemName: "bubble.right")
+                            .foregroundColor(Color(hex: "8A2BE2"))
+                        Text("\(item.comments) Comments")
+                            .foregroundColor(Color(hex: "8A2BE2"))
+                    }
+                }
+                
+                Spacer()
+                
+                // Cancel button for scheduled trips
+                if let tripDetails = item.tripDetails, tripDetails.isScheduled {
+                    Button(action: {
+                        showingCancelConfirmation = true
+                    }) {
+                        HStack(spacing: 4) {
+                            Image(systemName: "xmark.circle.fill")
+                            Text("Cancel Trip")
+                        }
+                        .font(.subheadline)
+                        .foregroundColor(.white)
+                        .padding(.horizontal, 16)
+                        .padding(.vertical, 8)
+                        .background(Color.red)
+                        .cornerRadius(8)
+                    }
+                }
+            }
+            
+            // Expanded reactions view
+            if isReactionsExpanded {
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 12) {
                         ForEach(commonEmojis, id: \.self) { emoji in
                             Button(action: {
                                 viewModel.toggleReaction(emoji, by: "You", to: item.id)
-                                withAnimation(.spring()) {
-                                    showingEmojiPicker = false
-                                }
                             }) {
                                 Text(emoji)
-                                    .font(.system(size: 16))
+                                    .font(.system(size: 24))
                             }
                         }
-                        
-                        Button(action: {
-                            // Add custom emoji picker functionality
-                        }) {
-                            Image(systemName: "plus.circle.fill")
-                                .font(.system(size: 16))
-                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
-                        }
                     }
+                    .padding(.horizontal, 4)
                 }
-                .padding(.horizontal, 8)
-                .padding(.vertical, 4)
-                .background(Color(hex: "8A2BE2").opacity(0.1)) // Purple with opacity
-                .cornerRadius(12)
-                
-                Button(action: { showingComments = true }) {
-                    HStack(spacing: 4) {
-                        Image(systemName: "bubble.right")
-                            .font(.system(size: 14))
-                            .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
-                        Text("\(item.comments)")
-                            .font(.system(size: 12))
-                            .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
-                    }
-                }
-                
-                if item.isYourPost {
-                    Button(action: {
-                        viewModel.currentPostId = item.id
-                        viewModel.showingFriendSelector = true
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: viewModel.hasAddedFriends(for: item.id) ? "checkmark.circle.fill" : "person.badge.plus")
-                                .font(.system(size: 14))
-                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
-                            Text(viewModel.hasAddedFriends(for: item.id) ? "See Added Friends" : "Add Friends")
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
-                        }
-                    }
-                } else {
-                    Button(action: {
-                        viewModel.toggleFriendRequest(for: item.id)
-                    }) {
-                        HStack(spacing: 4) {
-                            Image(systemName: viewModel.hasRequestedToBeAdded(for: item.id) ? "checkmark.circle.fill" : "person.badge.plus")
-                                .font(.system(size: 14))
-                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
-                            Text(viewModel.hasRequestedToBeAdded(for: item.id) ? "Sent" : "Add me")
-                                .font(.system(size: 12))
-                                .foregroundColor(Color(hex: "8A2BE2").opacity(0.7)) // Purple with opacity
-                        }
-                    }
-                }
+                .frame(height: 40)
             }
         }
         .padding()
         .background(Color.white)
         .cornerRadius(16)
-        .shadow(color: Color(hex: "8A2BE2").opacity(0.1), radius: 10, x: 0, y: 2) // Purple shadow
-        .sheet(isPresented: $viewModel.showingFriendSelector) {
-            FriendSelectorView(viewModel: viewModel)
+        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 2)
+        .opacity(viewModel.isTripCanceled(item.id) ? 0.5 : 1.0)
+        .alert("Cancel Trip", isPresented: $showingCancelConfirmation) {
+            Button("Cancel", role: .cancel) { }
+            Button("Yes, Cancel Trip", role: .destructive) {
+                viewModel.cancelTrip(item.id)
+            }
+        } message: {
+            Text("Are you sure you want to cancel this trip?")
         }
     }
 }
@@ -651,6 +690,50 @@ struct CreatePostView: View {
     
     private var bestPurchaseContent: some View {
         VStack(alignment: .leading, spacing: 20) {
+            // Past Purchases Horizontal Scroll
+            VStack(alignment: .leading, spacing: 10) {
+                Text("Your Past Purchases")
+                    .font(.headline)
+                
+                ScrollView(.horizontal, showsIndicators: false) {
+                    HStack(spacing: 16) {
+                        ForEach(samplePastPurchases) { purchase in
+                            Button(action: {
+                                selectedPurchase = purchase
+                            }) {
+                                VStack(alignment: .leading, spacing: 8) {
+                                    VStack(alignment: .leading, spacing: 4) {
+                                        Text(purchase.name)
+                                            .font(.subheadline)
+                                            .fontWeight(.medium)
+                                            .foregroundColor(.primary)
+                                            .lineLimit(1)
+                                        
+                                        Text(String(format: "$%.2f", purchase.price))
+                                            .font(.caption)
+                                            .foregroundColor(.secondary)
+                                        
+                                        Text(purchase.category)
+                                            .font(.caption2)
+                                            .foregroundColor(.secondary)
+                                            .lineLimit(1)
+                                    }
+                                }
+                                .frame(width: 120)
+                                .padding(8)
+                                .background(
+                                    RoundedRectangle(cornerRadius: 12)
+                                        .fill(selectedPurchase?.id == purchase.id ? Color(hex: "8A2BE2").opacity(0.1) : Color.white)
+                                        .shadow(color: Color.black.opacity(0.1), radius: 4, x: 0, y: 2)
+                                )
+                            }
+                        }
+                    }
+                    .padding(.horizontal)
+                }
+                .frame(height: 100)
+            }
+            
             // Description Input
             VStack(alignment: .leading, spacing: 10) {
                 Text("Why is this your best purchase?")
@@ -692,6 +775,45 @@ struct CreatePostView: View {
         }
         .padding(.horizontal)
     }
+    
+    // Sample past purchases data
+    private var samplePastPurchases: [Purchase] = [
+        Purchase(
+            name: "Nike Air Max",
+            price: 129.99,
+            date: Date().addingTimeInterval(-7*24*60*60),
+            category: "Shoes",
+            imageURL: nil
+        ),
+        Purchase(
+            name: "AirPods Pro",
+            price: 249.99,
+            date: Date().addingTimeInterval(-14*24*60*60),
+            category: "Electronics",
+            imageURL: nil
+        ),
+        Purchase(
+            name: "Levi's Jeans",
+            price: 69.99,
+            date: Date().addingTimeInterval(-21*24*60*60),
+            category: "Clothing",
+            imageURL: nil
+        ),
+        Purchase(
+            name: "Coffee Maker",
+            price: 89.99,
+            date: Date().addingTimeInterval(-28*24*60*60),
+            category: "Kitchen",
+            imageURL: nil
+        ),
+        Purchase(
+            name: "Yoga Mat",
+            price: 29.99,
+            date: Date().addingTimeInterval(-35*24*60*60),
+            category: "Fitness",
+            imageURL: nil
+        )
+    ]
     
     private var goodDealContent: some View {
         VStack(alignment: .leading, spacing: 20) {
@@ -1140,6 +1262,53 @@ struct NavigationBarModifier: ViewModifier {
     
     func body(content: Content) -> some View {
         content
+    }
+}
+
+struct EmojiPickerView: View {
+    @Binding var selectedEmoji: String
+    @Binding var showingPicker: Bool
+    
+    private let emojis = ["❤️", "😂", "🔥", "👍", "🎉", "😍", "😮", "😢", "😡", "🤔"]
+    
+    var body: some View {
+        VStack(spacing: 8) {
+            HStack {
+                Text("Choose Reaction")
+                    .font(.headline)
+                Spacer()
+                Button(action: {
+                    withAnimation {
+                        showingPicker = false
+                    }
+                }) {
+                    Image(systemName: "xmark.circle.fill")
+                        .foregroundColor(.gray)
+                }
+            }
+            .padding(.horizontal)
+            
+            ScrollView(.horizontal, showsIndicators: false) {
+                HStack(spacing: 12) {
+                    ForEach(emojis, id: \.self) { emoji in
+                        Button(action: {
+                            selectedEmoji = emoji
+                            withAnimation {
+                                showingPicker = false
+                            }
+                        }) {
+                            Text(emoji)
+                                .font(.system(size: 32))
+                        }
+                    }
+                }
+                .padding(.horizontal)
+            }
+        }
+        .padding(.vertical, 8)
+        .background(Color.white)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.1), radius: 8, x: 0, y: 2)
     }
 } 
  
