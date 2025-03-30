@@ -1,11 +1,13 @@
 import SwiftUI
 
 struct ContentView: View {
-    @State private var selectedTab = 0
+    @StateObject private var selectedTab = 0
+    @EnvironmentObject var feedViewModel: FeedViewModel
     
     var body: some View {
         TabView(selection: $selectedTab) {
             FeedView()
+                .environmentObject(feedViewModel)
                 .tabItem {
                     Label("Feed", systemImage: selectedTab == 0 ? "newspaper.fill" : "newspaper")
                 }

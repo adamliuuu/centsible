@@ -3,67 +3,66 @@
   "data": [
     {
       "id": "123e4567-e89b-12d3-a456-426614174000",
-      "product_name": "Life-size T-Rex Skeleton Replica",
+      "product_name": "AirPods Pro",
       "merchant": "Amazon",
-      "price": 25999.99,
+      "price": 249.99,
       "purchase_time": "2024-03-20T03:15:00Z",
-      "payment_method": "Cryptocurrency"
+      "payment_method": "Amazon Store Card",
+      "user": "Sarah Chen"
     },
     {
       "id": "987fcdeb-51a2-43d7-9876-543210987001",
-      "product_name": "Private Island (Slightly Used)",
-      "merchant": "Walmart",
-      "price": 1500000.00,
+      "product_name": "Personalized Kazoo with Express Shipping",
+      "merchant": "Amazon",
+      "price": 29.99,
       "purchase_time": "2024-03-19T20:00:00Z",
-      "payment_method": "Monopoly Money"
+      "payment_method": "Amazon Store Card",
+      "user": "Ziya Momin"
     },
     {
       "id": "456abcde-f123-45b6-789c-012345678002",
-      "product_name": "Invisible Paint",
-      "merchant": "Target",
-      "price": 459.99,
-      "purchase_time": "2024-03-20T14:15:00Z",
-      "payment_method": "IOU Note"
+      "product_name": "Celsius Drink (64-Pack) + Cliff Bars Bulk Pack",
+      "merchant": "Amazon",
+      "price": 159.99,
+      "purchase_time": "2024-03-19T14:15:00Z",
+      "payment_method": "Amazon Store Card",
+      "user": "Nicole Deng"
     },
     {
       "id": "789ghijk-l012-34m5-678n-901234567003",
-      "product_name": "Indoor Trampoline Park Kit",
+      "product_name": "Artisanal Pencil - Limited Edition",
       "merchant": "Amazon",
-      "price": 899.99,
+      "price": 500.00,
       "purchase_time": "2024-03-18T22:15:00Z",
-      "payment_method": "Discover Card"
+      "payment_method": "Amazon Store Card",
+      "user": "Brooke Xu"
     },
     {
       "id": "321mnopq-r456-78s9-012t-345678901004",
-      "product_name": "Life-Size Gummy Bear Mold",
-      "merchant": "Target",
-      "price": 79.99,
+      "product_name": "Fortnite Ultra Rare Skin Bundle",
+      "merchant": "Amazon",
+      "price": 99.99,
       "purchase_time": "2024-03-17T15:45:00Z",
-      "payment_method": "Capital One Venture"
+      "payment_method": "Amazon Store Card",
+      "user": "Adam Liu"
     },
     {
       "id": "654uvwxy-z789-01a2-345b-678901234005",
-      "product_name": "Desktop Cotton Candy Machine",
-      "merchant": "Walmart",
-      "price": 129.99,
+      "product_name": "Medical Appointment - Back Check",
+      "merchant": "DoorDash",
+      "price": 75.00,
       "purchase_time": "2024-03-16T19:23:00Z",
-      "payment_method": "Chase Freedom"
+      "payment_method": "Insurance Copay",
+      "user": "Joe Fisherman"
     },
     {
       "id": "987bcdef-g012-34h5-678i-901234567006",
-      "product_name": "LED Light-Up Dance Floor Tiles (50 Pack)",
-      "merchant": "Amazon",
-      "price": 599.99,
+      "product_name": "Jiu Jitsu Monthly Dues + Bulk Dumplings Pack",
+      "merchant": "DoorDash",
+      "price": 199.99,
       "purchase_time": "2024-03-15T21:09:00Z",
-      "payment_method": "Citi Double Cash"
-    },
-    {
-      "id": "123jklmn-o345-67p8-901q-234567890007",
-      "product_name": "Inflatable Sumo Wrestler Costume Set",
-      "merchant": "Target",
-      "price": 89.99,
-      "purchase_time": "2024-03-14T17:42:00Z",
-      "payment_method": "Wells Fargo Active Cash"
+      "payment_method": "DoorDash Direct",
+      "user": "Bennett Zeus"
     }
   ]
 } 
