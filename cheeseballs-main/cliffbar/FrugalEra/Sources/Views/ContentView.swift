@@ -4,46 +4,58 @@ struct ContentView: View {
     @State private var selectedTab = 0
     
     var body: some View {
-        TabView(selection: $selectedTab) {
-            FeedView()
-                .tabItem {
-                    Label("Feed", systemImage: selectedTab == 0 ? "newspaper.fill" : "newspaper")
-                }
-                .tag(0)
+        ZStack {
+            // Background gradient
+            LinearGradient(
+                gradient: Gradient(colors: [
+                    Color(hex: "8A2BE2").opacity(0.05), // Very subtle purple
+                    Color(hex: "8A2BE2").opacity(0.02), // Even more subtle purple
+                    Color(.systemGray6) // System gray
+                ]),
+                startPoint: .topLeading,
+                endPoint: .bottomTrailing
+            )
+            .ignoresSafeArea()
             
-            LeaderboardView()
-                .tabItem {
-                    Label("Leaderboard", systemImage: selectedTab == 1 ? "trophy.fill" : "trophy")
-                }
-                .tag(1)
-            
-            FriendsView()
-                .tabItem {
-                    Label("Friends", systemImage: selectedTab == 2 ? "person.2.fill" : "person.2")
-                }
-                .tag(2)
-            
-            ProfileView()
-                .tabItem {
-                    Label("Profile", systemImage: selectedTab == 3 ? "person.circle.fill" : "person.circle")
-                }
-                .tag(3)
-            
-            SettingsView()
-                .tabItem {
-                    Label("Settings", systemImage: selectedTab == 4 ? "gear.circle.fill" : "gear.circle")
-                }
-                .tag(4)
+            // TabView with transparent background
+            TabView(selection: $selectedTab) {
+                FeedView()
+                    .tabItem {
+                        Image(systemName: "house.fill")
+                        Text("Feed")
+                    }
+                    .tag(0)
+                
+                LeaderboardView()
+                    .tabItem {
+                        Image(systemName: "trophy.fill")
+                        Text("Leaderboard")
+                    }
+                    .tag(1)
+                
+                FriendsView()
+                    .tabItem {
+                        Image(systemName: "person.2.fill")
+                        Text("Friends")
+                    }
+                    .tag(2)
+                
+                SettingsView()
+                    .tabItem {
+                        Image(systemName: "gear")
+                        Text("Settings")
+                    }
+                    .tag(3)
+            }
+            .tint(Color(hex: "8A2BE2")) // Purple tint for tab bar
+            .background(Color.clear) // Make TabView background transparent
         }
-        .tint(.purple)
-        .background(Theme.colors.background)
         .onAppear {
             // Customize tab bar appearance
             let appearance = UITabBarAppearance()
             appearance.configureWithOpaqueBackground()
             appearance.backgroundColor = .systemBackground
             
-            // Use this appearance for both normal and scrolling states
             UITabBar.appearance().standardAppearance = appearance
             UITabBar.appearance().scrollEdgeAppearance = appearance
         }
@@ -284,9 +296,6 @@ struct HighlightCard: View {
             }
             
             Spacer()
-            
-            Image(systemName: "chevron.right")
-                .foregroundColor(.secondary)
         }
         .padding()
         .background(Color(.systemBackground))

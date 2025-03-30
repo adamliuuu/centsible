@@ -130,7 +130,7 @@ class FeedViewModel: ObservableObject {
                 FeedItem(
                     id: UUID(),
                     title: "Gamer Moment 🎮",
-                    description: "WOW Adam just bought a Fornite \"Ultra Rare!\" skin bundle. Someone needs to touch some grass…",
+                    description: "WOW Adam just bought a Fortnite \"Ultra Rare!\" skin bundle. Someone needs to touch some grass…",
                     timestamp: Date().addingTimeInterval(-86400),
                     type: .purchase,
                     comments: Int.random(in: 1...10),
