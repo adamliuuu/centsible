@@ -36,8 +36,11 @@ struct FeedView: View {
     var body: some View {
         NavigationView {
             ZStack {
+                Color(.systemBackground)
+                    .ignoresSafeArea()
+                
                 ScrollView {
-                    VStack(spacing: 20) {
+                    VStack(spacing: 24) {
                         // Filter Pills
                         ScrollView(.horizontal, showsIndicators: false) {
                             HStack(spacing: 12) {
@@ -72,20 +75,12 @@ struct FeedView: View {
                         showingCreatePost = true
                     }) {
                         Image(systemName: "plus.circle.fill")
-                            .font(.system(size: 32))
-                            .foregroundColor(.white)
-                            .shadow(color: Color(hex: "e2c4f5").opacity(0.2), radius: 5, x: 0, y: 2)
-                            .overlay(
-                                Circle()
-                                    .stroke(Color.white, lineWidth: 2)
-                                    .padding(1)
-                            )
+                            .font(.system(size: 24))
+                            .foregroundColor(.black)
                     }
                     .padding(.trailing, 4)
-                    .padding(.top, 12)
                 }
             }
-            .navigationBarColor(Color(hex: "e2c4f5"))
             .refreshable {
                 viewModel.fetchFeedItems()
             }
@@ -104,7 +99,6 @@ struct FeedView: View {
             } message: {
                 Text(viewModel.error?.localizedDescription ?? "Unknown error")
             }
-            .background(Color(.systemBackground))
             .sheet(isPresented: $showingComments) {
                 CommentsView()
             }
@@ -142,17 +136,12 @@ struct FilterPill: View {
             Text(title)
                 .font(.subheadline)
                 .fontWeight(.medium)
-                .foregroundColor(isSelected ? .white : Color(hex: "3A7D44"))
+                .foregroundColor(isSelected ? .white : .black)
                 .padding(.horizontal, 16)
                 .padding(.vertical, 8)
                 .background(
                     RoundedRectangle(cornerRadius: 20)
-                        .fill(isSelected ? Color(hex: "3A7D44") : Color(red: 0.95, green: 0.95, blue: 0.98))
-                        .shadow(color: isSelected ? Color(hex: "3A7D44").opacity(0.3) : Color.clear, radius: 5)
-                )
-                .overlay(
-                    RoundedRectangle(cornerRadius: 20)
-                        .stroke(Color(hex: "3A7D44"), lineWidth: 2)
+                        .fill(isSelected ? Color.black : Color(.systemGray6))
                 )
         }
     }
@@ -168,7 +157,7 @@ struct FeedItemCard: View {
     private let commonEmojis = ["❤️", "😂", "🔥"]
     
     var body: some View {
-        VStack(alignment: .leading, spacing: 12) {
+        VStack(alignment: .leading, spacing: 16) {
             // Header with name and menu
             HStack {
                 Text(item.userName.split(separator: " ").first ?? "")  // First name only
@@ -179,7 +168,7 @@ struct FeedItemCard: View {
                 
                 Text(item.timestamp, style: .relative)
                     .font(.caption)
-                    .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                    .foregroundColor(.gray)
                 
                 Menu {
                     Button(action: {}) {
@@ -190,27 +179,33 @@ struct FeedItemCard: View {
                     }
                 } label: {
                     Image(systemName: "ellipsis")
-                        .foregroundColor(.black.opacity(0.8))
+                        .foregroundColor(.gray)
                 }
             }
             
             // Content with image and description
-            HStack(alignment: .top, spacing: 12) {
+            HStack(alignment: .top, spacing: 16) {
                 // Character Image
-                Image("characterbrooke")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color(hex: "1E4F2A"), lineWidth: 1)
-                    )
+                if item.userImage == "👤" {
+                    Circle()
+                        .fill(Color(.systemGray6))
+                        .frame(width: 80, height: 80)
+                        .overlay(
+                            Text("👤")
+                                .font(.system(size: 32))
+                        )
+                } else {
+                    Image(item.userImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 80, height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: 12))
+                }
                 
                 // Description
                 Text(item.description)
                     .font(.body)
-                    .fontWeight(.medium)
+                    .fontWeight(.regular)
                     .foregroundColor(.black)
             }
             
@@ -226,11 +221,11 @@ struct FeedItemCard: View {
                                     Text(reaction.emoji)
                                     Text("\(reaction.count)")
                                         .font(.caption)
-                                        .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                                        .foregroundColor(.gray)
                                 }
                                 .padding(.horizontal, 8)
                                 .padding(.vertical, 4)
-                                .background(Color(red: 0.95, green: 0.95, blue: 0.98))
+                                .background(Color(.systemGray6))
                                 .cornerRadius(12)
                             }
                         }
@@ -249,7 +244,7 @@ struct FeedItemCard: View {
                     }) {
                         Image(systemName: "face.smiling")
                             .font(.system(size: 16))
-                            .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                            .foregroundColor(.gray)
                     }
                     
                     if showingEmojiPicker {
@@ -270,23 +265,23 @@ struct FeedItemCard: View {
                         }) {
                             Image(systemName: "plus.circle.fill")
                                 .font(.system(size: 16))
-                                .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                                .foregroundColor(.gray)
                         }
                     }
                 }
                 .padding(.horizontal, 8)
                 .padding(.vertical, 4)
-                .background(Color(red: 0.95, green: 0.95, blue: 0.98))
+                .background(Color(.systemGray6))
                 .cornerRadius(12)
                 
                 Button(action: { showingComments = true }) {
                     HStack(spacing: 4) {
                         Image(systemName: "bubble.right")
                             .font(.system(size: 14))
-                            .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                            .foregroundColor(.gray)
                         Text("\(item.comments)")
                             .font(.system(size: 12))
-                            .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                            .foregroundColor(.gray)
                     }
                 }
                 
@@ -298,10 +293,10 @@ struct FeedItemCard: View {
                         HStack(spacing: 4) {
                             Image(systemName: viewModel.hasAddedFriends(for: item.id) ? "checkmark.circle.fill" : "person.badge.plus")
                                 .font(.system(size: 14))
-                                .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                                .foregroundColor(.gray)
                             Text(viewModel.hasAddedFriends(for: item.id) ? "See Added Friends" : "Add Friends")
                                 .font(.system(size: 12))
-                                .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                                .foregroundColor(.gray)
                         }
                     }
                 } else {
@@ -311,10 +306,10 @@ struct FeedItemCard: View {
                         HStack(spacing: 4) {
                             Image(systemName: viewModel.hasRequestedToBeAdded(for: item.id) ? "checkmark.circle.fill" : "person.badge.plus")
                                 .font(.system(size: 14))
-                                .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                                .foregroundColor(.gray)
                             Text(viewModel.hasRequestedToBeAdded(for: item.id) ? "Sent" : "Add me")
                                 .font(.system(size: 12))
-                                .foregroundColor(Color(hex: "1E4F2A").opacity(0.8))
+                                .foregroundColor(.gray)
                         }
                     }
                 }
@@ -322,18 +317,8 @@ struct FeedItemCard: View {
         }
         .padding()
         .background(Color.white)
-        .cornerRadius(12)
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color(hex: "1E4F2A"), lineWidth: 3)
-        )
-        .overlay(
-            RoundedRectangle(cornerRadius: 12)
-                .stroke(Color(hex: "1E4F2A").opacity(0.5), lineWidth: 2)
-                .padding(2)
-        )
-        .shadow(color: Color(hex: "1E4F2A").opacity(0.1), radius: 5, x: 0, y: 2)
-        .shadow(color: Color(hex: "1E4F2A").opacity(0.2), radius: 8, x: 0, y: 4)
+        .cornerRadius(16)
+        .shadow(color: Color.black.opacity(0.05), radius: 10, x: 0, y: 2)
         .sheet(isPresented: $viewModel.showingFriendSelector) {
             FriendSelectorView(viewModel: viewModel)
         }
