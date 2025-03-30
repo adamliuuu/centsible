@@ -124,7 +124,7 @@ class FeedViewModel: ObservableObject {
                     timestamp: Date().addingTimeInterval(-10800), // 3 hours ago
                     type: .purchase,
                     comments: Int.random(in: 1...10),
-                    userImage: "👤",
+                    userImage: "characternicole",
                     userName: "Nicole",
                     isYourPost: false
                 ),

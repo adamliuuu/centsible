@@ -554,15 +554,25 @@ struct FeedItemCard: View {
             // Content with image and description
             HStack(alignment: .top, spacing: 12) {
                 // Character Image
-                Image("characterbrooke")
-                    .resizable()
-                    .aspectRatio(contentMode: .fit)
-                    .frame(width: 80, height: 80)
-                    .clipShape(RoundedRectangle(cornerRadius: 8))
-                    .overlay(
-                        RoundedRectangle(cornerRadius: 8)
-                            .stroke(Color(hex: "1E4F2A"), lineWidth: 1)
-                    )
+                if item.userImage == "👤" {
+                    Circle()
+                        .fill(Color.blue.opacity(0.2))
+                        .frame(width: 80, height: 80)
+                        .overlay(
+                            Text("👤")
+                                .font(.system(size: 32))
+                        )
+                } else {
+                    Image(item.userImage)
+                        .resizable()
+                        .aspectRatio(contentMode: .fit)
+                        .frame(width: 80, height: 80)
+                        .clipShape(RoundedRectangle(cornerRadius: 8))
+                        .overlay(
+                            RoundedRectangle(cornerRadius: 8)
+                                .stroke(Color(hex: "1E4F2A"), lineWidth: 1)
+                        )
+                }
                 
                 // Description
                 Text(item.description)

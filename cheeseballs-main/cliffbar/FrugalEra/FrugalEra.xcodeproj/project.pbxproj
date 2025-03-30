@@ -26,6 +26,7 @@
 		D308FAEB026BB193B84C0EA8 /* adam.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = adam.swift; sourceTree = "<group>"; };
 		D59735005529EF48C297995F /* FrugalEraApp.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = FrugalEraApp.swift; sourceTree = "<group>"; };
 		D844E5ED56FCA221C44A60A6 /* User.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = User.swift; sourceTree = "<group>"; };
+		EBA6DE5E2D99299300C96D02 /* Assets.xcassets */ = {isa = PBXFileReference; lastKnownFileType = folder.assetcatalog; path = Assets.xcassets; sourceTree = "<group>"; };
 		FEA5127267F153A3600CAD6A /* Theme.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = Theme.swift; sourceTree = "<group>"; };
 /* End PBXFileReference section */
 
@@ -50,6 +51,7 @@
 		92C705860C13367FB58FAB02 = {
 			isa = PBXGroup;
 			children = (
+				EBA6DE5E2D99299300C96D02 /* Assets.xcassets */,
 				BE50893203FEB0780F92562D /* Sources */,
 				27A230197E54D476E9D8E030 /* Products */,
 			);
@@ -64,7 +66,6 @@
 				E0BEB2F0975192A8E2EDCEAC /* Theme */,
 				D9AD8F85A8904810712EDC9F /* ViewModels */,
 				60FC859F06D51148AD7F6B51 /* Views */,
-				F1234567890ABCDEF1234567 /* Assets */,
 			);
 			path = Sources;
 			sourceTree = "<group>";
@@ -92,13 +93,6 @@
 				FEA5127267F153A3600CAD6A /* Theme.swift */,
 			);
 			path = Theme;
-			sourceTree = "<group>";
-		};
-		F1234567890ABCDEF1234567 /* Assets */ = {
-			isa = PBXGroup;
-			children = (
-			);
-			path = Assets;
 			sourceTree = "<group>";
 		};
 /* End PBXGroup section */
